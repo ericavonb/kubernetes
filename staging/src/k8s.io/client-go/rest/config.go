@@ -74,6 +74,9 @@ type Config struct {
 	// Impersonate is the configuration that RESTClient will use for impersonation.
 	Impersonate ImpersonationConfig
 
+	// ExternalTokener is configuration for calling out to an executable to fetch auth tokens
+	ExternalTokener *clientcmdapi.ExecConfig
+
 	// Server requires plugin-specified authentication.
 	AuthProvider *clientcmdapi.AuthProviderConfig
 
@@ -435,6 +438,7 @@ func CopyConfig(config *Config) *Config {
 			Extra:    config.Impersonate.Extra,
 			UserName: config.Impersonate.UserName,
 		},
+		ExternalTokener:     config.ExternalTokener,
 		AuthProvider:        config.AuthProvider,
 		AuthConfigPersister: config.AuthConfigPersister,
 		TLSClientConfig: TLSClientConfig{

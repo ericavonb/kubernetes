@@ -101,6 +101,9 @@ type AuthInfo struct {
 	// TokenFile is a pointer to a file that contains a bearer token (as described above).  If both Token and TokenFile are present, Token takes precedence.
 	// +optional
 	TokenFile string `json:"tokenFile,omitempty"`
+	// ExternalTokener contains information for an executable that will output a bearer token (as described above).  If Token or TokenFile are present, Token, if present, otherwise TokenFile takes precedence.
+	// +optional
+	ExternalTokener *ExecConfig `json:"tokenExec,omitempty"`
 	// Impersonate is the username to act-as.
 	// +optional
 	Impersonate string `json:"act-as,omitempty"`
@@ -138,6 +141,26 @@ type Context struct {
 	// Extensions holds additional information. This is useful for extenders so that reads and writes don't clobber unknown fields
 	// +optional
 	Extensions map[string]runtime.Object `json:"extensions,omitempty"`
+}
+
+// ExecConfig contains information for constructing an executable to run via os.Exec
+type ExecConfig struct {
+	// Command is the name of the command to be executed
+	Command string `json:"command"`
+	// Args lists arguments to supply to the command
+	// +optional
+	Args []string `json:"args"`
+	// Env defines additional environment variables to expose to the process. These
+	// are unioned with the host's environment, with variable values lists here having
+	// precedence.
+	// +optional
+	Env []ExecEnvVar `json:"env"`
+}
+
+// ExecEnvVar describes an environment variable to set in an executable's environment
+type ExecEnvVar struct {
+	Name  string `json:"name"`
+	Value string `json:"value"`
 }
 
 // AuthProviderConfig holds the configuration for a specified auth provider.
