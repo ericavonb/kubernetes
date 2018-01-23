@@ -241,7 +241,9 @@ func (config *DirectClientConfig) getUserIdentificationPartialConfig(configAuthI
 		mergedConfig.AuthProvider = configAuthInfo.AuthProvider
 		mergedConfig.AuthConfigPersister = persistAuthConfig
 	}
-
+	if configAuthInfo.ExternalTokener != nil {
+		mergedConfig.ExternalTokener = configAuthInfo.ExternalTokener
+	}
 	// if there still isn't enough information to authenticate the user, try prompting
 	if !canIdentifyUser(*mergedConfig) && (fallbackReader != nil) {
 		if len(config.promptedCredentials.username) > 0 && len(config.promptedCredentials.password) > 0 {
@@ -289,8 +291,8 @@ func makeServerIdentificationConfig(info clientauth.Info) restclient.Config {
 
 func canIdentifyUser(config restclient.Config) bool {
 	return len(config.Username) > 0 ||
-		(len(config.CertFile) > 0 || len(config.CertData) > 0) ||
-		len(config.BearerToken) > 0 ||
+		len(config.CertFile) > 0 || len(config.CertData) > 0 ||
+		len(config.BearerToken) > 0 || config.ExternalTokener != nil ||
 		config.AuthProvider != nil
 }
 
